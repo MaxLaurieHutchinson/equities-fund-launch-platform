@@ -5,8 +5,8 @@ Build an integrated C# platform that can stand up a new algorithmic equities sub
 
 ## Fit Targets
 
-- **Saragossa role fit:** technology ownership + hands-on C# + PM/trader enablement.
-- **PhD fit extension:** multi-agent coordination and collective behavior can be layered on top after core runtime stabilizes.
+- **Target technology-lead fit:** technology ownership + hands-on C# + PM/trader enablement.
+- **Research extension path:** multi-agent coordination and collective behavior can be layered on top after core runtime stabilizes.
 
 ## Delivery Phases
 
@@ -55,4 +55,3 @@ Build an integrated C# platform that can stand up a new algorithmic equities sub
 
 - Add `agent arena` mode where multiple strategy agents negotiate for capital.
 - Add systemic-risk mini-lab (cascade replay + containment response).
-
