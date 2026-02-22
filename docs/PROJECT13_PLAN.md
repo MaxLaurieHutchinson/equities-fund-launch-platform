@@ -54,17 +54,17 @@ Build an integrated C# platform that can stand up a new algorithmic equities sub
   - feedback recommendations (`feedback-recommendations.csv`)
   - feedback loop summary (`feedback-loop-summary.json`)
 
-## Phase 5 - Showcase Hardening
-- Clear module docs and architecture diagrams.
-- Deterministic demo script and reproducible runbook.
-- Portfolio-safe outputs and sanitized fixtures.
+## Phase 5 - Showcase Hardening (Done)
+- Clear module docs and architecture diagrams (`docs/MODULE_GUIDE.md`).
+- Deterministic demo script and reproducible runbook (`scripts/generate_showcase.sh`, `docs/SHOWCASE_RUNBOOK.md`).
+- Public-safe outputs and sanitized package flow (`ShowcasePackWriter` -> `artifacts/showcase/public`).
 
 ## Initial Milestone Definition
 
-### Milestone M4 (current target)
-- package a deterministic showcase runbook and architecture visuals
-- add portfolio-safe snapshot assets for public repo presentation
-- maintain full green test suite while preparing final hardening pass
+### Milestone M5 (current target)
+- keep full runtime deterministic and test-stable
+- maintain public-safe packaging boundary
+- prepare optional expansion tracks (agent arena, systemic risk mini-lab)
 
 ## Stretch Targets
 

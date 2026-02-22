@@ -9,7 +9,8 @@ public sealed record FundLaunchScenario(
     IReadOnlyList<StrategyBookConfig>? StrategyBooks = null,
     IReadOnlyList<PolicyOverrideRequest>? PolicyOverrides = null,
     StrategyPluginRegistry? PluginRegistry = null,
-    IncidentSimulationConfig? IncidentSimulation = null);
+    IncidentSimulationConfig? IncidentSimulation = null,
+    DateTime? FixedTimestampUtc = null);
 
 public static class FundLaunchScenarioFactory
 {
@@ -117,6 +118,7 @@ public static class FundLaunchScenarioFactory
                 EnableFeedDropout: true,
                 LatencySpikeMultiplier: 1.40m,
                 VenueRejectRatio: 0.34m,
-                FeedDropoutRatio: 0.22m));
+                FeedDropoutRatio: 0.22m),
+            FixedTimestampUtc: new DateTime(2026, 02, 22, 12, 00, 00, DateTimeKind.Utc));
     }
 }
