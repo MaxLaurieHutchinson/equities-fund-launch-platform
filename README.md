@@ -51,3 +51,16 @@ dotnet run --project src/FundLaunch.Platform.Cli -- reports
 - Architecture details: `docs/ARCHITECTURE.md`
 - Delivery plan and milestones: `docs/PROJECT13_PLAN.md`
 - Portfolio-facing one-page summary: `docs/SHOWCASE_ONE_PAGER.md`
+
+## Safety Guardrails
+
+This clone is configured for public-safe development and PR-first workflow.
+
+```bash
+git config core.hooksPath .githooks
+chmod +x .githooks/pre-commit
+chmod +x .githooks/pre-push
+```
+
+- `pre-commit`: blocks private/sensitive file patterns.
+- `pre-push`: blocks direct pushes to `main`/`master` (branch + PR flow).

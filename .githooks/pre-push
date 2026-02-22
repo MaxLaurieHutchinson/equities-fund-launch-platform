@@ -1,0 +1,41 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+remote_name="${1:-}"
+remote_url="${2:-}"
+
+if [ "${ALLOW_MAIN_PUSH:-0}" = "1" ]; then
+  exit 0
+fi
+
+block_ref() {
+  local ref="$1"
+  [ "$ref" = "refs/heads/main" ] || [ "$ref" = "refs/heads/master" ]
+}
+
+blocked_lines=()
+while read -r local_ref local_sha remote_ref remote_sha; do
+  if block_ref "$remote_ref"; then
+    blocked_lines+=("$local_ref -> $remote_ref")
+  fi
+
+done
+
+if [ ${#blocked_lines[@]} -gt 0 ]; then
+  cat <<MSG
+Push blocked by policy.
+Direct pushes to main/master are disabled in this clone.
+Use: feature branch -> push -> PR -> merge.
+
+Remote: ${remote_name:-unknown} (${remote_url:-unknown})
+Blocked refspec(s):
+MSG
+  for line in "${blocked_lines[@]}"; do
+    echo "- $line"
+  done
+  echo
+  echo "Temporary override (not recommended): ALLOW_MAIN_PUSH=1 git push ..."
+  exit 1
+fi
+
+exit 0

@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+staged="$(git diff --cached --name-only --diff-filter=ACMR)"
+
+if [ -z "${staged}" ]; then
+  exit 0
+fi
+
+# Block known private/non-public directories and filenames.
+blocked_path_regex='^(cv|portfolio|research|private|local|scratch|notes|screenshots|docs-private|artifacts-private|tmp|temp)(/|$)'
+blocked_name_regex='(interview|cv-studio|saragossa|job-research|recruiter)'
+
+bad_paths="$(printf "%s\n" "${staged}" | grep -nE "${blocked_path_regex}|${blocked_name_regex}" || true)"
+
+if [ -n "${bad_paths}" ]; then
+  cat <<'MSG'
+Commit blocked by safety guard.
+Staged paths appear to include private/non-public materials.
+
+If this is intentional, move the file(s) to a public-safe path first.
+MSG
+  printf "\nBlocked staged paths:\n%s\n" "${bad_paths}"
+  exit 1
+fi
+
+exit 0
