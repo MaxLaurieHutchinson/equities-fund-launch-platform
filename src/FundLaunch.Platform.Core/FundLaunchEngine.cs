@@ -35,21 +35,35 @@ public sealed class FundLaunchEngine
         }
 
         var risk = RiskGate.Evaluate(allocations, policy.EffectiveLimits);
-        var intents = ExecutionPlanner.Build(allocations, risk, policy.EffectiveLimits);
-        var incident = IncidentSimulator.Run(signals, intents, scenario.IncidentSimulation, timestamp);
-        var telemetry = TelemetryBuilder.Build(allocations, risk, incident.AdjustedIntents, incident);
+        var baselineIntents = ExecutionPlanner.Build(allocations, risk, policy.EffectiveLimits);
+
+        var eventBus = new InMemoryRuntimeEventBus();
+        var incident = IncidentSimulator.Run(signals, baselineIntents, scenario.IncidentSimulation, timestamp, eventBus);
+        var tca = TcaAnalyzer.Analyze(baselineIntents, incident.AdjustedIntents, incident, timestamp, eventBus);
+        var feedback = FeedbackLoopEngine.BuildRecommendations(tca, risk, incident, timestamp, eventBus);
+        var incidentWithTimeline = incident with { Timeline = eventBus.Snapshot() };
+
+        var telemetry = TelemetryBuilder.Build(
+            allocations,
+            risk,
+            incidentWithTimeline.AdjustedIntents,
+            incidentWithTimeline,
+            tca,
+            feedback);
 
         var run = new PlatformRunResult(
             Timestamp: timestamp,
             Signals: signals,
             Allocations: allocations,
             Risk: risk,
-            ExecutionIntents: incident.AdjustedIntents,
+            ExecutionIntents: incidentWithTimeline.AdjustedIntents,
             Telemetry: telemetry,
             StrategyBooks: strategyBooks,
             PolicyAudit: policy.AuditTrail,
             StrategyLifecycle: lifecycleEvents,
-            IncidentSimulation: incident);
+            IncidentSimulation: incidentWithTimeline,
+            TcaAnalysis: tca,
+            FeedbackLoop: feedback);
 
         var completionEvents = registry.ExecuteRunCompleted(run, timestamp, runId);
         return run with
@@ -92,6 +106,13 @@ public sealed class FundLaunchEngine
             StrategyLifecycleEvents: run.StrategyLifecycle.Count,
             IncidentTimelineEvents: run.IncidentSimulation.Timeline.Count,
             IncidentReplayFrames: run.IncidentSimulation.ReplayFrames.Count,
-            ActiveIncidentFaults: run.IncidentSimulation.ActiveFaults.Count);
+            ActiveIncidentFaults: run.IncidentSimulation.ActiveFaults.Count,
+            TcaAvgFillRate: run.TcaAnalysis.Summary.AvgFillRate,
+            TcaAvgSlippageBps: run.TcaAnalysis.Summary.AvgSlippageBps,
+            TcaTotalEstimatedCost: run.TcaAnalysis.Summary.TotalEstimatedCost,
+            FeedbackRecommendationCount: run.FeedbackLoop.Summary.RecommendationCount,
+            FeedbackApprovedCount: run.FeedbackLoop.Summary.ApprovedCount,
+            FeedbackBlockedCount: run.FeedbackLoop.Summary.BlockedCount,
+            FeedbackPolicyState: run.FeedbackLoop.Summary.PolicyState);
     }
 }

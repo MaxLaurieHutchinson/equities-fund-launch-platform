@@ -29,6 +29,7 @@ flowchart LR
 - `Incident Simulator`: regime selection, fault injection, replay frame generation.
 - `Runtime Event Bus`: ordered event timeline for incident and operational traces.
 - `TCA Feedback Engine`: slippage/cost attribution and policy feedback.
+- `Feedback Loop Engine`: closed-loop route recommendations with guardrail decisions.
 - `Observability Control Plane`: health checks, anomaly detection, incident timeline.
 
 ## Runtime Contracts
@@ -38,6 +39,7 @@ flowchart LR
 - policy override and approvals audit trail
 - strategy plugin lifecycle trace (`initialize`, `composite-published`, `run-completed`)
 - incident simulation traces (`timeline`, `replay`, `fault summary`)
+- TCA + feedback artifacts (`fill quality`, `route summary`, `policy recommendations`)
 - no external secrets required for baseline runs
 
 ## Future Extensions
