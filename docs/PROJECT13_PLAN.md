@@ -33,10 +33,16 @@ Build an integrated C# platform that can stand up a new algorithmic equities sub
   - policy override audit (`policy-override-audit.csv`)
   - plugin lifecycle timeline (`strategy-plugin-lifecycle.csv`)
 
-## Phase 3 - Market + Incident Simulation
-- Market regime simulator and event bus.
-- Fault injection scenarios (latency spike, venue reject burst, feed dropout).
-- Replay + post-incident artifact pack.
+## Phase 3 - Market + Incident Simulation (Done)
+- Market regime simulator and in-memory runtime event bus.
+- Fault injection scenarios:
+  - latency spike
+  - venue reject burst
+  - feed dropout
+- Replay + post-incident artifact pack:
+  - incident event timeline (`incident-event-timeline.csv`)
+  - execution replay (`incident-replay.csv`)
+  - incident summary payload (`incident-summary.json`)
 
 ## Phase 4 - TCA + Feedback Loops
 - Fill-quality analytics integrated with routing policy.
@@ -49,10 +55,10 @@ Build an integrated C# platform that can stand up a new algorithmic equities sub
 
 ## Initial Milestone Definition
 
-### Milestone M2 (current target)
-- keep deterministic runtime stable while adding simulation/event features
-- preserve policy/audit and strategy-lifecycle traces in all scenarios
-- maintain full green test suite for core runtime
+### Milestone M3 (current target)
+- integrate TCA metrics into execution + incident outputs
+- introduce closed-loop routing recommendations with policy guardrails
+- maintain deterministic run mode with full green test suite
 
 ## Stretch Targets
 

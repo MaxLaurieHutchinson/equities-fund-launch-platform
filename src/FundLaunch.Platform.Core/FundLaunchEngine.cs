@@ -36,18 +36,20 @@ public sealed class FundLaunchEngine
 
         var risk = RiskGate.Evaluate(allocations, policy.EffectiveLimits);
         var intents = ExecutionPlanner.Build(allocations, risk, policy.EffectiveLimits);
-        var telemetry = TelemetryBuilder.Build(allocations, risk, intents);
+        var incident = IncidentSimulator.Run(signals, intents, scenario.IncidentSimulation, timestamp);
+        var telemetry = TelemetryBuilder.Build(allocations, risk, incident.AdjustedIntents, incident);
 
         var run = new PlatformRunResult(
             Timestamp: timestamp,
             Signals: signals,
             Allocations: allocations,
             Risk: risk,
-            ExecutionIntents: intents,
+            ExecutionIntents: incident.AdjustedIntents,
             Telemetry: telemetry,
             StrategyBooks: strategyBooks,
             PolicyAudit: policy.AuditTrail,
-            StrategyLifecycle: lifecycleEvents);
+            StrategyLifecycle: lifecycleEvents,
+            IncidentSimulation: incident);
 
         var completionEvents = registry.ExecuteRunCompleted(run, timestamp, runId);
         return run with
@@ -87,6 +89,9 @@ public sealed class FundLaunchEngine
             ControlState: run.Telemetry.ControlState,
             AppliedPolicyOverrideCount: appliedPolicyCount,
             PendingPolicyOverrideCount: pendingPolicyCount,
-            StrategyLifecycleEvents: run.StrategyLifecycle.Count);
+            StrategyLifecycleEvents: run.StrategyLifecycle.Count,
+            IncidentTimelineEvents: run.IncidentSimulation.Timeline.Count,
+            IncidentReplayFrames: run.IncidentSimulation.ReplayFrames.Count,
+            ActiveIncidentFaults: run.IncidentSimulation.ActiveFaults.Count);
     }
 }

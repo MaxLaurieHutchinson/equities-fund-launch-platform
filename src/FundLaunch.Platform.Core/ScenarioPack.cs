@@ -8,7 +8,8 @@ public sealed record FundLaunchScenario(
     RiskLimitConfig Limits,
     IReadOnlyList<StrategyBookConfig>? StrategyBooks = null,
     IReadOnlyList<PolicyOverrideRequest>? PolicyOverrides = null,
-    StrategyPluginRegistry? PluginRegistry = null);
+    StrategyPluginRegistry? PluginRegistry = null,
+    IncidentSimulationConfig? IncidentSimulation = null);
 
 public static class FundLaunchScenarioFactory
 {
@@ -109,6 +110,13 @@ public static class FundLaunchScenarioFactory
             Limits: limits,
             StrategyBooks: strategyBooks,
             PolicyOverrides: policyOverrides,
-            PluginRegistry: StrategyPluginFactory.CreateDeterministicRegistry());
+            PluginRegistry: StrategyPluginFactory.CreateDeterministicRegistry(),
+            IncidentSimulation: new IncidentSimulationConfig(
+                EnableLatencySpike: true,
+                EnableVenueRejectBurst: true,
+                EnableFeedDropout: true,
+                LatencySpikeMultiplier: 1.40m,
+                VenueRejectRatio: 0.34m,
+                FeedDropoutRatio: 0.22m));
     }
 }

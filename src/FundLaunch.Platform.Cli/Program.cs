@@ -22,6 +22,9 @@ Console.WriteLine($"Fleet health score:      {summary.FleetHealthScore:F2}");
 Console.WriteLine($"Control state:           {summary.ControlState}");
 Console.WriteLine($"Policy overrides(applied/pending): {summary.AppliedPolicyOverrideCount}/{summary.PendingPolicyOverrideCount}");
 Console.WriteLine($"Plugin lifecycle events: {summary.StrategyLifecycleEvents}");
+Console.WriteLine($"Incident events:         {summary.IncidentTimelineEvents}");
+Console.WriteLine($"Incident replay frames:  {summary.IncidentReplayFrames}");
+Console.WriteLine($"Active incident faults:  {summary.ActiveIncidentFaults}");
 
 if (args.Contains("reports", StringComparer.OrdinalIgnoreCase))
 {
@@ -35,6 +38,9 @@ if (args.Contains("reports", StringComparer.OrdinalIgnoreCase))
     Console.WriteLine($"Strategy books CSV:      {outputDir}/strategy-books.csv");
     Console.WriteLine($"Policy audit CSV:        {outputDir}/policy-override-audit.csv");
     Console.WriteLine($"Plugin lifecycle CSV:    {outputDir}/strategy-plugin-lifecycle.csv");
+    Console.WriteLine($"Incident timeline CSV:   {outputDir}/incident-event-timeline.csv");
+    Console.WriteLine($"Incident replay CSV:     {outputDir}/incident-replay.csv");
+    Console.WriteLine($"Incident summary JSON:   {outputDir}/incident-summary.json");
     Console.WriteLine($"Telemetry JSON:          {outputDir}/telemetry-dashboard.json");
     Console.WriteLine($"Summary JSON:            {outputDir}/run-summary.json");
 }

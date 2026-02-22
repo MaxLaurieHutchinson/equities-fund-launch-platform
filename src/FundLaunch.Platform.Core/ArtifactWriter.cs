@@ -19,6 +19,9 @@ public static class ArtifactWriter
         var booksPath = Path.Combine(outputDir, "strategy-books.csv");
         var policyPath = Path.Combine(outputDir, "policy-override-audit.csv");
         var lifecyclePath = Path.Combine(outputDir, "strategy-plugin-lifecycle.csv");
+        var incidentTimelinePath = Path.Combine(outputDir, "incident-event-timeline.csv");
+        var incidentReplayPath = Path.Combine(outputDir, "incident-replay.csv");
+        var incidentSummaryPath = Path.Combine(outputDir, "incident-summary.json");
         var telemetryPath = Path.Combine(outputDir, "telemetry-dashboard.json");
         var summaryPath = Path.Combine(outputDir, "run-summary.json");
 
@@ -28,6 +31,9 @@ public static class ArtifactWriter
         File.WriteAllText(booksPath, BuildStrategyBookCsv(run.StrategyBooks));
         File.WriteAllText(policyPath, BuildPolicyAuditCsv(run.PolicyAudit));
         File.WriteAllText(lifecyclePath, BuildStrategyLifecycleCsv(run.StrategyLifecycle));
+        File.WriteAllText(incidentTimelinePath, BuildIncidentTimelineCsv(run.IncidentSimulation.Timeline));
+        File.WriteAllText(incidentReplayPath, BuildIncidentReplayCsv(run.IncidentSimulation.ReplayFrames));
+        File.WriteAllText(incidentSummaryPath, JsonSerializer.Serialize(run.IncidentSimulation, new JsonSerializerOptions { WriteIndented = true }));
         File.WriteAllText(telemetryPath, JsonSerializer.Serialize(run.Telemetry, new JsonSerializerOptions { WriteIndented = true }));
         File.WriteAllText(summaryPath, JsonSerializer.Serialize(summary, new JsonSerializerOptions { WriteIndented = true }));
     }
@@ -53,6 +59,9 @@ public static class ArtifactWriter
         sb.AppendLine($"- Applied policy overrides: `{summary.AppliedPolicyOverrideCount}`");
         sb.AppendLine($"- Pending policy overrides: `{summary.PendingPolicyOverrideCount}`");
         sb.AppendLine($"- Strategy lifecycle events: `{summary.StrategyLifecycleEvents}`");
+        sb.AppendLine($"- Incident timeline events: `{summary.IncidentTimelineEvents}`");
+        sb.AppendLine($"- Incident replay frames: `{summary.IncidentReplayFrames}`");
+        sb.AppendLine($"- Active incident faults: `{summary.ActiveIncidentFaults}`");
 
         return sb.ToString();
     }
@@ -153,6 +162,45 @@ public static class ArtifactWriter
                 entry.Status,
                 entry.Detail.Replace(',', ';'),
                 entry.Timestamp.ToString("O", CultureInfo.InvariantCulture)));
+        }
+
+        return sb.ToString();
+    }
+
+    private static string BuildIncidentTimelineCsv(IReadOnlyList<RuntimeEvent> timeline)
+    {
+        var sb = new StringBuilder();
+        sb.AppendLine("sequence,timestamp_utc,event_type,source,detail,impact_score");
+
+        foreach (var entry in timeline)
+        {
+            sb.AppendLine(string.Join(',',
+                entry.Sequence,
+                entry.Timestamp.ToString("O", CultureInfo.InvariantCulture),
+                entry.EventType,
+                entry.Source,
+                entry.Detail.Replace(',', ';'),
+                entry.ImpactScore.ToString("F6", CultureInfo.InvariantCulture)));
+        }
+
+        return sb.ToString();
+    }
+
+    private static string BuildIncidentReplayCsv(IReadOnlyList<IncidentReplayFrame> replayFrames)
+    {
+        var sb = new StringBuilder();
+        sb.AppendLine("step,symbol,baseline_notional,adjusted_notional,baseline_route,adjusted_route,outcome");
+
+        foreach (var frame in replayFrames)
+        {
+            sb.AppendLine(string.Join(',',
+                frame.Step,
+                frame.Symbol,
+                frame.BaselineNotional.ToString("F2", CultureInfo.InvariantCulture),
+                frame.AdjustedNotional.ToString("F2", CultureInfo.InvariantCulture),
+                frame.BaselineRoute,
+                frame.AdjustedRoute,
+                frame.Outcome));
         }
 
         return sb.ToString();

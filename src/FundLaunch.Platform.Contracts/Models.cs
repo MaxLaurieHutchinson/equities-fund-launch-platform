@@ -129,6 +129,46 @@ public sealed record StrategyPluginLifecycleEvent(
     string Detail,
     DateTime Timestamp);
 
+public sealed record IncidentSimulationConfig(
+    bool EnableLatencySpike,
+    bool EnableVenueRejectBurst,
+    bool EnableFeedDropout,
+    decimal LatencySpikeMultiplier,
+    decimal VenueRejectRatio,
+    decimal FeedDropoutRatio);
+
+public sealed record MarketRegimeSnapshot(
+    string Regime,
+    decimal VolatilityMultiplier,
+    decimal LiquidityMultiplier,
+    decimal SpreadBps);
+
+public sealed record RuntimeEvent(
+    int Sequence,
+    DateTime Timestamp,
+    string EventType,
+    string Source,
+    string Detail,
+    decimal ImpactScore);
+
+public sealed record IncidentReplayFrame(
+    int Step,
+    string Symbol,
+    decimal BaselineNotional,
+    decimal AdjustedNotional,
+    string BaselineRoute,
+    string AdjustedRoute,
+    string Outcome);
+
+public sealed record IncidentSimulationResult(
+    MarketRegimeSnapshot Regime,
+    IReadOnlyList<RuntimeEvent> Timeline,
+    IReadOnlyList<string> ActiveFaults,
+    IReadOnlyList<ExecutionIntent> AdjustedIntents,
+    IReadOnlyList<IncidentReplayFrame> ReplayFrames,
+    decimal RejectedNotional,
+    decimal AddedLatencyMs);
+
 public sealed record PlatformTelemetry(
     decimal FleetHealthScore,
     int CriticalFlags,
@@ -146,7 +186,8 @@ public sealed record PlatformRunResult(
     PlatformTelemetry Telemetry,
     IReadOnlyList<StrategyBookAllocationSummary> StrategyBooks,
     IReadOnlyList<PolicyOverrideAuditEntry> PolicyAudit,
-    IReadOnlyList<StrategyPluginLifecycleEvent> StrategyLifecycle);
+    IReadOnlyList<StrategyPluginLifecycleEvent> StrategyLifecycle,
+    IncidentSimulationResult IncidentSimulation);
 
 public sealed record PlatformRunSummary(
     int SignalSymbolCount,
@@ -165,4 +206,7 @@ public sealed record PlatformRunSummary(
     string ControlState,
     int AppliedPolicyOverrideCount,
     int PendingPolicyOverrideCount,
-    int StrategyLifecycleEvents);
+    int StrategyLifecycleEvents,
+    int IncidentTimelineEvents,
+    int IncidentReplayFrames,
+    int ActiveIncidentFaults);
