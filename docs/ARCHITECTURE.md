@@ -17,6 +17,7 @@ flowchart LR
     E --> H
     G --> H
     H --> I["Audit & Dashboard Artifacts"]
+    I --> L["Showcase Pack Writer (Public-Safe)"]
 ```
 
 ## Module Responsibilities
@@ -31,6 +32,7 @@ flowchart LR
 - `TCA Feedback Engine`: slippage/cost attribution and policy feedback.
 - `Feedback Loop Engine`: closed-loop route recommendations with guardrail decisions.
 - `Observability Control Plane`: health checks, anomaly detection, incident timeline.
+- `Showcase Pack Writer`: sanitizes runtime outputs for public-facing sharing.
 
 ## Runtime Contracts
 
@@ -40,6 +42,7 @@ flowchart LR
 - strategy plugin lifecycle trace (`initialize`, `composite-published`, `run-completed`)
 - incident simulation traces (`timeline`, `replay`, `fault summary`)
 - TCA + feedback artifacts (`fill quality`, `route summary`, `policy recommendations`)
+- deterministic timestamp controls for reproducible snapshots
 - no external secrets required for baseline runs
 
 ## Future Extensions

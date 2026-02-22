@@ -8,7 +8,7 @@ public sealed class FundLaunchEngine
     {
         scenario.Limits.Validate();
 
-        var timestamp = DateTime.UtcNow;
+        var timestamp = ResolveTimestamp(scenario.FixedTimestampUtc);
         var runId = $"RUN-{timestamp:yyyyMMddHHmmssfff}";
         var registry = scenario.PluginRegistry ?? StrategyPluginRegistry.Empty;
 
@@ -114,5 +114,26 @@ public sealed class FundLaunchEngine
             FeedbackApprovedCount: run.FeedbackLoop.Summary.ApprovedCount,
             FeedbackBlockedCount: run.FeedbackLoop.Summary.BlockedCount,
             FeedbackPolicyState: run.FeedbackLoop.Summary.PolicyState);
+    }
+
+    private static DateTime ResolveTimestamp(DateTime? maybeTimestamp)
+    {
+        if (!maybeTimestamp.HasValue)
+        {
+            return DateTime.UtcNow;
+        }
+
+        var timestamp = maybeTimestamp.Value;
+        if (timestamp.Kind == DateTimeKind.Utc)
+        {
+            return timestamp;
+        }
+
+        if (timestamp.Kind == DateTimeKind.Local)
+        {
+            return timestamp.ToUniversalTime();
+        }
+
+        return DateTime.SpecifyKind(timestamp, DateTimeKind.Utc);
     }
 }

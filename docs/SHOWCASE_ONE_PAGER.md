@@ -15,8 +15,10 @@ A modular platform that demonstrates how a new algorithmic equities sub-fund can
 - strategy onboarding and orchestration
 - policy-driven risk gate and overrides
 - execution intent generation and route selection
-- TCA feedback loop
+- incident simulation + replay workflow
+- TCA feedback loop with guardrail-aware recommendations
 - control-plane health/anomaly monitoring
+- public-safe showcase packaging (`artifacts/showcase/public`)
 
 ## Why It Matters
 

@@ -1,6 +1,32 @@
+using System.Globalization;
 using FundLaunch.Platform.Core;
 
-var scenario = FundLaunchScenarioFactory.CreateDeterministicScenario();
+var fixedTimestampArg = args
+    .FirstOrDefault(x => x.StartsWith("--fixed-ts=", StringComparison.OrdinalIgnoreCase));
+
+DateTime? fixedTimestampUtc = null;
+if (!string.IsNullOrWhiteSpace(fixedTimestampArg))
+{
+    var rawValue = fixedTimestampArg["--fixed-ts=".Length..];
+    if (!DateTime.TryParse(
+            rawValue,
+            CultureInfo.InvariantCulture,
+            DateTimeStyles.AdjustToUniversal | DateTimeStyles.AssumeUniversal,
+            out var parsed))
+    {
+        Console.Error.WriteLine($"Invalid fixed timestamp: {rawValue}");
+        Console.Error.WriteLine("Expected ISO-8601, e.g. --fixed-ts=2026-02-22T12:00:00Z");
+        return;
+    }
+
+    fixedTimestampUtc = DateTime.SpecifyKind(parsed, DateTimeKind.Utc);
+}
+
+var baseScenario = FundLaunchScenarioFactory.CreateDeterministicScenario();
+var scenario = baseScenario with
+{
+    FixedTimestampUtc = fixedTimestampUtc ?? baseScenario.FixedTimestampUtc
+};
 var engine = new FundLaunchEngine();
 
 var run = engine.Run(scenario);
@@ -31,6 +57,7 @@ Console.WriteLine($"TCA est. cost:           {summary.TcaTotalEstimatedCost:F2}"
 Console.WriteLine($"Feedback recs:           {summary.FeedbackRecommendationCount}");
 Console.WriteLine($"Feedback approved/blocked: {summary.FeedbackApprovedCount}/{summary.FeedbackBlockedCount}");
 Console.WriteLine($"Feedback policy state:   {summary.FeedbackPolicyState}");
+Console.WriteLine($"Run timestamp (UTC):     {run.Timestamp:O}");
 
 if (args.Contains("reports", StringComparer.OrdinalIgnoreCase))
 {
@@ -53,4 +80,18 @@ if (args.Contains("reports", StringComparer.OrdinalIgnoreCase))
     Console.WriteLine($"Feedback summary JSON:   {outputDir}/feedback-loop-summary.json");
     Console.WriteLine($"Telemetry JSON:          {outputDir}/telemetry-dashboard.json");
     Console.WriteLine($"Summary JSON:            {outputDir}/run-summary.json");
+}
+
+if (args.Contains("showcase", StringComparer.OrdinalIgnoreCase))
+{
+    var outputDir = Path.Combine("artifacts", "showcase", "public");
+    ShowcasePackWriter.WritePublicSnapshot(outputDir, run);
+
+    Console.WriteLine();
+    Console.WriteLine($"Showcase report:         {outputDir}/public-run-report.md");
+    Console.WriteLine($"Showcase summary:        {outputDir}/public-run-summary.json");
+    Console.WriteLine($"Showcase intents:        {outputDir}/public-execution-intents.csv");
+    Console.WriteLine($"Showcase feedback:       {outputDir}/public-feedback-recommendations.csv");
+    Console.WriteLine($"Showcase timeline:       {outputDir}/public-event-timeline.csv");
+    Console.WriteLine($"Showcase lifecycle:      {outputDir}/public-strategy-lifecycle.csv");
 }
