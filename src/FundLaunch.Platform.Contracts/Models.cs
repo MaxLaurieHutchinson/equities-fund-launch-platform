@@ -11,13 +11,30 @@ public sealed record CompositeSignal(
     decimal CompositeScore,
     IReadOnlyList<string> Contributors);
 
+public sealed record CurrentBookWeight(string Symbol, decimal Weight);
+
 public sealed record AllocationDraft(
     string Symbol,
     decimal CurrentWeight,
     decimal TargetWeight,
     decimal DeltaWeight,
     string Action,
-    string Rationale);
+    string Rationale,
+    string StrategyBookId = "MASTER");
+
+public sealed record StrategyBookConfig(
+    string BookId,
+    IReadOnlyList<string> StrategyIds,
+    decimal CapitalShare,
+    IReadOnlyList<CurrentBookWeight> CurrentBook);
+
+public sealed record StrategyBookAllocationSummary(
+    string BookId,
+    decimal CapitalShare,
+    int AllocationCount,
+    decimal GrossExposure,
+    decimal NetExposure,
+    decimal Turnover);
 
 public sealed record RiskLimitConfig(
     decimal MaxAbsWeightPerSymbol,
@@ -70,13 +87,47 @@ public sealed record RiskDecision(
     decimal Turnover,
     IReadOnlyList<string> Breaches);
 
+public sealed record PolicyOverrideRequest(
+    string PolicyKey,
+    decimal Value,
+    string Reason,
+    string RequestedBy,
+    DateTime RequestedAtUtc,
+    string? ApprovedBy = null,
+    DateTime? ApprovedAtUtc = null,
+    DateTime? ExpiresAtUtc = null)
+{
+    public bool IsApproved => !string.IsNullOrWhiteSpace(ApprovedBy) && ApprovedAtUtc.HasValue;
+}
+
+public sealed record PolicyOverrideAuditEntry(
+    string PolicyKey,
+    decimal RequestedValue,
+    decimal? PriorValue,
+    decimal? AppliedValue,
+    string Status,
+    string Reason,
+    string RequestedBy,
+    string? ApprovedBy,
+    DateTime RequestedAtUtc,
+    DateTime? ApprovedAtUtc,
+    DateTime EvaluatedAtUtc);
+
 public sealed record ExecutionIntent(
     string Symbol,
     string Side,
     decimal DeltaWeight,
     decimal Notional,
     string Route,
-    string Urgency);
+    string Urgency,
+    string StrategyBookId = "MASTER");
+
+public sealed record StrategyPluginLifecycleEvent(
+    string StrategyId,
+    string Hook,
+    string Status,
+    string Detail,
+    DateTime Timestamp);
 
 public sealed record PlatformTelemetry(
     decimal FleetHealthScore,
@@ -92,11 +143,15 @@ public sealed record PlatformRunResult(
     IReadOnlyList<AllocationDraft> Allocations,
     RiskDecision Risk,
     IReadOnlyList<ExecutionIntent> ExecutionIntents,
-    PlatformTelemetry Telemetry);
+    PlatformTelemetry Telemetry,
+    IReadOnlyList<StrategyBookAllocationSummary> StrategyBooks,
+    IReadOnlyList<PolicyOverrideAuditEntry> PolicyAudit,
+    IReadOnlyList<StrategyPluginLifecycleEvent> StrategyLifecycle);
 
 public sealed record PlatformRunSummary(
     int SignalSymbolCount,
     int AllocationCount,
+    int StrategyBookCount,
     bool RiskApproved,
     int BreachCount,
     int ExecutionIntentCount,
@@ -107,4 +162,7 @@ public sealed record PlatformRunSummary(
     string TopSignalSymbol,
     decimal TopSignalScore,
     decimal FleetHealthScore,
-    string ControlState);
+    string ControlState,
+    int AppliedPolicyOverrideCount,
+    int PendingPolicyOverrideCount,
+    int StrategyLifecycleEvents);

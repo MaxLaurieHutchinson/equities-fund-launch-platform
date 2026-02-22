@@ -15,7 +15,7 @@ Build an integrated C# platform that can stand up a new algorithmic equities sub
 - Architecture and roadmap documented.
 - Portfolio-facing one-pager added.
 
-## Phase 1 - Vertical Slice (In Progress)
+## Phase 1 - Vertical Slice (Done)
 - Build end-to-end deterministic path:
   - strategy signals -> allocation draft -> risk gate -> execution intents -> telemetry snapshot
 - Output artifacts:
@@ -24,10 +24,14 @@ Build an integrated C# platform that can stand up a new algorithmic equities sub
   - dashboard payload (`json`)
 - Add unit tests around core path.
 
-## Phase 2 - Multi-Strategy Runtime
-- Strategy plugin registry with lifecycle hooks.
-- Capital allocator supporting multiple strategy books.
-- Policy overrides and approvals audit.
+## Phase 2 - Multi-Strategy Runtime (Done)
+- Strategy plugin registry with lifecycle hooks (`initialize`, `composite-published`, `run-completed`).
+- Capital allocator supporting multiple strategy books with portfolio roll-up.
+- Policy overrides with approval-state audit (`applied`, `pending`, `expired`, `unsupported`).
+- New artifact outputs:
+  - strategy book exposure pack (`strategy-books.csv`)
+  - policy override audit (`policy-override-audit.csv`)
+  - plugin lifecycle timeline (`strategy-plugin-lifecycle.csv`)
 
 ## Phase 3 - Market + Incident Simulation
 - Market regime simulator and event bus.
@@ -45,11 +49,10 @@ Build an integrated C# platform that can stand up a new algorithmic equities sub
 
 ## Initial Milestone Definition
 
-### Milestone M1 (current target)
-- runnable CLI with deterministic data
-- at least 3 modules wired (signals, risk, execution)
-- tests passing
-- artifact generation enabled
+### Milestone M2 (current target)
+- keep deterministic runtime stable while adding simulation/event features
+- preserve policy/audit and strategy-lifecycle traces in all scenarios
+- maintain full green test suite for core runtime
 
 ## Stretch Targets
 

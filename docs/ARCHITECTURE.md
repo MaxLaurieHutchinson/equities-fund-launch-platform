@@ -20,7 +20,7 @@ flowchart LR
 
 - `Strategy Registry`: strategy lifecycle, versioning, enable/disable flags.
 - `Signal Aggregator`: normalized strategy outputs and confidence blending.
-- `Capital Allocator`: exposure budgets, concentration limits, turnover shaping.
+- `Capital Allocator`: per-book capital shares, exposure budgets, concentration limits, turnover shaping.
 - `Risk Policy Gate`: hard limits and policy-based approvals.
 - `Execution Planner`: order intent creation, route suggestion, urgency profile.
 - `TCA Feedback Engine`: slippage/cost attribution and policy feedback.
@@ -30,6 +30,8 @@ flowchart LR
 
 - deterministic fixtures by default
 - explicit artifact outputs (`md`, `csv`, `json`)
+- policy override and approvals audit trail
+- strategy plugin lifecycle trace (`initialize`, `composite-published`, `run-completed`)
 - no external secrets required for baseline runs
 
 ## Future Extensions

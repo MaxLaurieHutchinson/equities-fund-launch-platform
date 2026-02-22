@@ -28,7 +28,8 @@ public static class ExecutionPlanner
                     DeltaWeight: x.DeltaWeight,
                     Notional: notional,
                     Route: route,
-                    Urgency: urgency);
+                    Urgency: urgency,
+                    StrategyBookId: x.StrategyBookId);
             })
             .Where(x => x.Notional >= limits.MinOrderNotional)
             .OrderByDescending(x => x.Notional)
