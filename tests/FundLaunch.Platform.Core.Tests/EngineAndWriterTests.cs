@@ -40,6 +40,10 @@ public sealed class EngineAndWriterTests
             Assert.True(File.Exists(Path.Combine(outputDir, "incident-event-timeline.csv")));
             Assert.True(File.Exists(Path.Combine(outputDir, "incident-replay.csv")));
             Assert.True(File.Exists(Path.Combine(outputDir, "incident-summary.json")));
+            Assert.True(File.Exists(Path.Combine(outputDir, "tca-fill-quality.csv")));
+            Assert.True(File.Exists(Path.Combine(outputDir, "tca-route-summary.csv")));
+            Assert.True(File.Exists(Path.Combine(outputDir, "feedback-recommendations.csv")));
+            Assert.True(File.Exists(Path.Combine(outputDir, "feedback-loop-summary.json")));
             Assert.True(File.Exists(Path.Combine(outputDir, "telemetry-dashboard.json")));
             Assert.True(File.Exists(Path.Combine(outputDir, "run-summary.json")));
         }

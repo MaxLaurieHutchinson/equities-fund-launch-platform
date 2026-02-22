@@ -44,9 +44,15 @@ Build an integrated C# platform that can stand up a new algorithmic equities sub
   - execution replay (`incident-replay.csv`)
   - incident summary payload (`incident-summary.json`)
 
-## Phase 4 - TCA + Feedback Loops
+## Phase 4 - TCA + Feedback Loops (Done)
 - Fill-quality analytics integrated with routing policy.
-- Closed-loop tuning recommendations with safety guardrails.
+- Route-level TCA summaries and estimated execution cost metrics.
+- Closed-loop tuning recommendations with safety guardrails (`approved`, `blocked`, `monitor`).
+- New artifact outputs:
+  - TCA fill metrics (`tca-fill-quality.csv`)
+  - TCA route summary (`tca-route-summary.csv`)
+  - feedback recommendations (`feedback-recommendations.csv`)
+  - feedback loop summary (`feedback-loop-summary.json`)
 
 ## Phase 5 - Showcase Hardening
 - Clear module docs and architecture diagrams.
@@ -55,10 +61,10 @@ Build an integrated C# platform that can stand up a new algorithmic equities sub
 
 ## Initial Milestone Definition
 
-### Milestone M3 (current target)
-- integrate TCA metrics into execution + incident outputs
-- introduce closed-loop routing recommendations with policy guardrails
-- maintain deterministic run mode with full green test suite
+### Milestone M4 (current target)
+- package a deterministic showcase runbook and architecture visuals
+- add portfolio-safe snapshot assets for public repo presentation
+- maintain full green test suite while preparing final hardening pass
 
 ## Stretch Targets
 

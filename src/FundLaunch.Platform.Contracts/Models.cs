@@ -169,6 +169,58 @@ public sealed record IncidentSimulationResult(
     decimal RejectedNotional,
     decimal AddedLatencyMs);
 
+public sealed record TcaFillMetric(
+    string Symbol,
+    string StrategyBookId,
+    string Route,
+    decimal IntendedNotional,
+    decimal ExecutedNotional,
+    decimal FillRate,
+    decimal SlippageBps,
+    decimal EstimatedCost,
+    string QualityBand);
+
+public sealed record TcaRouteSummary(
+    string Route,
+    int IntentCount,
+    decimal AvgFillRate,
+    decimal AvgSlippageBps,
+    decimal TotalEstimatedCost,
+    int PoorQualityCount);
+
+public sealed record TcaSummary(
+    decimal AvgFillRate,
+    decimal AvgSlippageBps,
+    decimal TotalEstimatedCost,
+    int PoorQualityCount,
+    int BlockedIntentCount);
+
+public sealed record TcaAnalysisResult(
+    IReadOnlyList<TcaFillMetric> FillMetrics,
+    IReadOnlyList<TcaRouteSummary> RouteSummaries,
+    TcaSummary Summary);
+
+public sealed record RoutingPolicyRecommendation(
+    string Scope,
+    string CurrentRoute,
+    string ProposedRoute,
+    string Priority,
+    decimal Confidence,
+    string Rationale,
+    string GuardrailDecision,
+    string GuardrailReason);
+
+public sealed record FeedbackLoopSummary(
+    int RecommendationCount,
+    int ApprovedCount,
+    int BlockedCount,
+    int MonitorCount,
+    string PolicyState);
+
+public sealed record FeedbackLoopResult(
+    IReadOnlyList<RoutingPolicyRecommendation> Recommendations,
+    FeedbackLoopSummary Summary);
+
 public sealed record PlatformTelemetry(
     decimal FleetHealthScore,
     int CriticalFlags,
@@ -187,7 +239,9 @@ public sealed record PlatformRunResult(
     IReadOnlyList<StrategyBookAllocationSummary> StrategyBooks,
     IReadOnlyList<PolicyOverrideAuditEntry> PolicyAudit,
     IReadOnlyList<StrategyPluginLifecycleEvent> StrategyLifecycle,
-    IncidentSimulationResult IncidentSimulation);
+    IncidentSimulationResult IncidentSimulation,
+    TcaAnalysisResult TcaAnalysis,
+    FeedbackLoopResult FeedbackLoop);
 
 public sealed record PlatformRunSummary(
     int SignalSymbolCount,
@@ -209,4 +263,11 @@ public sealed record PlatformRunSummary(
     int StrategyLifecycleEvents,
     int IncidentTimelineEvents,
     int IncidentReplayFrames,
-    int ActiveIncidentFaults);
+    int ActiveIncidentFaults,
+    decimal TcaAvgFillRate,
+    decimal TcaAvgSlippageBps,
+    decimal TcaTotalEstimatedCost,
+    int FeedbackRecommendationCount,
+    int FeedbackApprovedCount,
+    int FeedbackBlockedCount,
+    string FeedbackPolicyState);

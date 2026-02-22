@@ -22,6 +22,10 @@ public static class ArtifactWriter
         var incidentTimelinePath = Path.Combine(outputDir, "incident-event-timeline.csv");
         var incidentReplayPath = Path.Combine(outputDir, "incident-replay.csv");
         var incidentSummaryPath = Path.Combine(outputDir, "incident-summary.json");
+        var tcaFillPath = Path.Combine(outputDir, "tca-fill-quality.csv");
+        var tcaRoutePath = Path.Combine(outputDir, "tca-route-summary.csv");
+        var feedbackRecommendationPath = Path.Combine(outputDir, "feedback-recommendations.csv");
+        var feedbackSummaryPath = Path.Combine(outputDir, "feedback-loop-summary.json");
         var telemetryPath = Path.Combine(outputDir, "telemetry-dashboard.json");
         var summaryPath = Path.Combine(outputDir, "run-summary.json");
 
@@ -34,6 +38,10 @@ public static class ArtifactWriter
         File.WriteAllText(incidentTimelinePath, BuildIncidentTimelineCsv(run.IncidentSimulation.Timeline));
         File.WriteAllText(incidentReplayPath, BuildIncidentReplayCsv(run.IncidentSimulation.ReplayFrames));
         File.WriteAllText(incidentSummaryPath, JsonSerializer.Serialize(run.IncidentSimulation, new JsonSerializerOptions { WriteIndented = true }));
+        File.WriteAllText(tcaFillPath, BuildTcaFillCsv(run.TcaAnalysis.FillMetrics));
+        File.WriteAllText(tcaRoutePath, BuildTcaRouteSummaryCsv(run.TcaAnalysis.RouteSummaries));
+        File.WriteAllText(feedbackRecommendationPath, BuildFeedbackRecommendationCsv(run.FeedbackLoop.Recommendations));
+        File.WriteAllText(feedbackSummaryPath, JsonSerializer.Serialize(run.FeedbackLoop.Summary, new JsonSerializerOptions { WriteIndented = true }));
         File.WriteAllText(telemetryPath, JsonSerializer.Serialize(run.Telemetry, new JsonSerializerOptions { WriteIndented = true }));
         File.WriteAllText(summaryPath, JsonSerializer.Serialize(summary, new JsonSerializerOptions { WriteIndented = true }));
     }
@@ -62,6 +70,12 @@ public static class ArtifactWriter
         sb.AppendLine($"- Incident timeline events: `{summary.IncidentTimelineEvents}`");
         sb.AppendLine($"- Incident replay frames: `{summary.IncidentReplayFrames}`");
         sb.AppendLine($"- Active incident faults: `{summary.ActiveIncidentFaults}`");
+        sb.AppendLine($"- TCA avg fill rate: `{summary.TcaAvgFillRate:F4}`");
+        sb.AppendLine($"- TCA avg slippage (bps): `{summary.TcaAvgSlippageBps:F2}`");
+        sb.AppendLine($"- TCA estimated cost: `{summary.TcaTotalEstimatedCost:F2}`");
+        sb.AppendLine($"- Feedback recommendations: `{summary.FeedbackRecommendationCount}`");
+        sb.AppendLine($"- Feedback approved/blocked: `{summary.FeedbackApprovedCount}/{summary.FeedbackBlockedCount}`");
+        sb.AppendLine($"- Feedback policy state: `{summary.FeedbackPolicyState}`");
 
         return sb.ToString();
     }
@@ -201,6 +215,68 @@ public static class ArtifactWriter
                 frame.BaselineRoute,
                 frame.AdjustedRoute,
                 frame.Outcome));
+        }
+
+        return sb.ToString();
+    }
+
+    private static string BuildTcaFillCsv(IReadOnlyList<TcaFillMetric> fillMetrics)
+    {
+        var sb = new StringBuilder();
+        sb.AppendLine("symbol,strategy_book_id,route,intended_notional,executed_notional,fill_rate,slippage_bps,estimated_cost,quality_band");
+
+        foreach (var metric in fillMetrics)
+        {
+            sb.AppendLine(string.Join(',',
+                metric.Symbol,
+                metric.StrategyBookId,
+                metric.Route,
+                metric.IntendedNotional.ToString("F2", CultureInfo.InvariantCulture),
+                metric.ExecutedNotional.ToString("F2", CultureInfo.InvariantCulture),
+                metric.FillRate.ToString("F6", CultureInfo.InvariantCulture),
+                metric.SlippageBps.ToString("F6", CultureInfo.InvariantCulture),
+                metric.EstimatedCost.ToString("F2", CultureInfo.InvariantCulture),
+                metric.QualityBand));
+        }
+
+        return sb.ToString();
+    }
+
+    private static string BuildTcaRouteSummaryCsv(IReadOnlyList<TcaRouteSummary> routeSummaries)
+    {
+        var sb = new StringBuilder();
+        sb.AppendLine("route,intent_count,avg_fill_rate,avg_slippage_bps,total_estimated_cost,poor_quality_count");
+
+        foreach (var route in routeSummaries)
+        {
+            sb.AppendLine(string.Join(',',
+                route.Route,
+                route.IntentCount,
+                route.AvgFillRate.ToString("F6", CultureInfo.InvariantCulture),
+                route.AvgSlippageBps.ToString("F6", CultureInfo.InvariantCulture),
+                route.TotalEstimatedCost.ToString("F2", CultureInfo.InvariantCulture),
+                route.PoorQualityCount));
+        }
+
+        return sb.ToString();
+    }
+
+    private static string BuildFeedbackRecommendationCsv(IReadOnlyList<RoutingPolicyRecommendation> recommendations)
+    {
+        var sb = new StringBuilder();
+        sb.AppendLine("scope,current_route,proposed_route,priority,confidence,rationale,guardrail_decision,guardrail_reason");
+
+        foreach (var recommendation in recommendations)
+        {
+            sb.AppendLine(string.Join(',',
+                recommendation.Scope,
+                recommendation.CurrentRoute,
+                recommendation.ProposedRoute,
+                recommendation.Priority,
+                recommendation.Confidence.ToString("F4", CultureInfo.InvariantCulture),
+                recommendation.Rationale.Replace(',', ';'),
+                recommendation.GuardrailDecision,
+                recommendation.GuardrailReason.Replace(',', ';')));
         }
 
         return sb.ToString();

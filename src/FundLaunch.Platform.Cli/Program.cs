@@ -6,7 +6,7 @@ var engine = new FundLaunchEngine();
 var run = engine.Run(scenario);
 var summary = FundLaunchEngine.BuildSummary(run);
 
-Console.WriteLine("Equities Fund Launch Platform - Project 13 kickoff slice");
+Console.WriteLine("Equities Fund Launch Platform - Project 13 integrated runtime");
 Console.WriteLine($"Signal symbols:          {summary.SignalSymbolCount}");
 Console.WriteLine($"Allocations:             {summary.AllocationCount}");
 Console.WriteLine($"Strategy books:          {summary.StrategyBookCount}");
@@ -25,6 +25,12 @@ Console.WriteLine($"Plugin lifecycle events: {summary.StrategyLifecycleEvents}")
 Console.WriteLine($"Incident events:         {summary.IncidentTimelineEvents}");
 Console.WriteLine($"Incident replay frames:  {summary.IncidentReplayFrames}");
 Console.WriteLine($"Active incident faults:  {summary.ActiveIncidentFaults}");
+Console.WriteLine($"TCA avg fill rate:       {summary.TcaAvgFillRate:F4}");
+Console.WriteLine($"TCA avg slippage (bps):  {summary.TcaAvgSlippageBps:F2}");
+Console.WriteLine($"TCA est. cost:           {summary.TcaTotalEstimatedCost:F2}");
+Console.WriteLine($"Feedback recs:           {summary.FeedbackRecommendationCount}");
+Console.WriteLine($"Feedback approved/blocked: {summary.FeedbackApprovedCount}/{summary.FeedbackBlockedCount}");
+Console.WriteLine($"Feedback policy state:   {summary.FeedbackPolicyState}");
 
 if (args.Contains("reports", StringComparer.OrdinalIgnoreCase))
 {
@@ -41,6 +47,10 @@ if (args.Contains("reports", StringComparer.OrdinalIgnoreCase))
     Console.WriteLine($"Incident timeline CSV:   {outputDir}/incident-event-timeline.csv");
     Console.WriteLine($"Incident replay CSV:     {outputDir}/incident-replay.csv");
     Console.WriteLine($"Incident summary JSON:   {outputDir}/incident-summary.json");
+    Console.WriteLine($"TCA fill CSV:            {outputDir}/tca-fill-quality.csv");
+    Console.WriteLine($"TCA route CSV:           {outputDir}/tca-route-summary.csv");
+    Console.WriteLine($"Feedback recs CSV:       {outputDir}/feedback-recommendations.csv");
+    Console.WriteLine($"Feedback summary JSON:   {outputDir}/feedback-loop-summary.json");
     Console.WriteLine($"Telemetry JSON:          {outputDir}/telemetry-dashboard.json");
     Console.WriteLine($"Summary JSON:            {outputDir}/run-summary.json");
 }

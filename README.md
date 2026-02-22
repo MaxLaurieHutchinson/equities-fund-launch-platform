@@ -1,7 +1,7 @@
 # Equities Fund Launch Platform
 
 [![.NET](https://img.shields.io/badge/.NET-10.0-512BD4?logo=dotnet&logoColor=white)](https://dotnet.microsoft.com/)
-[![Stage](https://img.shields.io/badge/Stage-Phase%203%20Simulation-0B7285)](docs/PROJECT13_PLAN.md)
+[![Stage](https://img.shields.io/badge/Stage-Phase%204%20Feedback-0B7285)](docs/PROJECT13_PLAN.md)
 [![Architecture](https://img.shields.io/badge/Architecture-Modular%20Control%20Plane-1C7ED6)](docs/ARCHITECTURE.md)
 
 A C# flagship build for algorithmic fund-launch technology ownership.
@@ -26,6 +26,7 @@ This project composes strategy onboarding, PM/trader controls, risk gating, exec
 - `Phase 1` complete: deterministic vertical slice (strategy -> risk -> execution -> telemetry).
 - `Phase 2` complete: plugin lifecycle hooks, multi-book allocator, and policy override audit trail.
 - `Phase 3` complete: market regime simulation, incident fault injection, replay/timeline artifacts.
+- `Phase 4` complete: TCA fill-quality analytics and closed-loop feedback recommendations with guardrails.
 
 ## Repository Map
 
@@ -58,6 +59,10 @@ dotnet run --project src/FundLaunch.Platform.Cli -- reports
 - `incident-event-timeline.csv`
 - `incident-replay.csv`
 - `incident-summary.json`
+- `tca-fill-quality.csv`
+- `tca-route-summary.csv`
+- `feedback-recommendations.csv`
+- `feedback-loop-summary.json`
 - `telemetry-dashboard.json`
 - `run-summary.json`
 
