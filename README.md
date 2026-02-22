@@ -1,7 +1,7 @@
 # Equities Fund Launch Platform
 
 [![.NET](https://img.shields.io/badge/.NET-10.0-512BD4?logo=dotnet&logoColor=white)](https://dotnet.microsoft.com/)
-[![Stage](https://img.shields.io/badge/Stage-Project%2013%20Kickoff-0B7285)](docs/PROJECT13_PLAN.md)
+[![Stage](https://img.shields.io/badge/Stage-Phase%202%20Runtime-0B7285)](docs/PROJECT13_PLAN.md)
 [![Architecture](https://img.shields.io/badge/Architecture-Modular%20Control%20Plane-1C7ED6)](docs/ARCHITECTURE.md)
 
 A C# flagship build for algorithmic fund-launch technology ownership.
@@ -23,7 +23,8 @@ This project composes strategy onboarding, PM/trader controls, risk gating, exec
 ## Current Status
 
 - `Phase 0` kickoff complete: repo scaffold + architecture + implementation plan.
-- `Phase 1` in progress: first runnable vertical slice (strategy -> risk -> execution -> telemetry).
+- `Phase 1` complete: deterministic vertical slice (strategy -> risk -> execution -> telemetry).
+- `Phase 2` complete: plugin lifecycle hooks, multi-book allocator, and policy override audit trail.
 
 ## Repository Map
 
@@ -45,6 +46,16 @@ This project composes strategy onboarding, PM/trader controls, risk gating, exec
 dotnet test
 dotnet run --project src/FundLaunch.Platform.Cli -- reports
 ```
+
+`reports/` now includes:
+- `latest-run-report.md`
+- `execution-intents.csv`
+- `allocations.csv`
+- `strategy-books.csv`
+- `policy-override-audit.csv`
+- `strategy-plugin-lifecycle.csv`
+- `telemetry-dashboard.json`
+- `run-summary.json`
 
 ## Design Direction
 

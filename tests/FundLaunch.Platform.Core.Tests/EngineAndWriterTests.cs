@@ -34,6 +34,9 @@ public sealed class EngineAndWriterTests
             Assert.True(File.Exists(Path.Combine(outputDir, "latest-run-report.md")));
             Assert.True(File.Exists(Path.Combine(outputDir, "execution-intents.csv")));
             Assert.True(File.Exists(Path.Combine(outputDir, "allocations.csv")));
+            Assert.True(File.Exists(Path.Combine(outputDir, "strategy-books.csv")));
+            Assert.True(File.Exists(Path.Combine(outputDir, "policy-override-audit.csv")));
+            Assert.True(File.Exists(Path.Combine(outputDir, "strategy-plugin-lifecycle.csv")));
             Assert.True(File.Exists(Path.Combine(outputDir, "telemetry-dashboard.json")));
             Assert.True(File.Exists(Path.Combine(outputDir, "run-summary.json")));
         }

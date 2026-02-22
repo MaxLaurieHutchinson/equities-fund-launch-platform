@@ -8,19 +8,56 @@ public sealed class FundLaunchEngine
     {
         scenario.Limits.Validate();
 
-        var signals = StrategyAggregator.Build(scenario.Signals);
-        var allocations = CapitalAllocator.Build(signals, scenario.CurrentBook, scenario.Limits);
-        var risk = RiskGate.Evaluate(allocations, scenario.Limits);
-        var intents = ExecutionPlanner.Build(allocations, risk, scenario.Limits);
+        var timestamp = DateTime.UtcNow;
+        var runId = $"RUN-{timestamp:yyyyMMddHHmmssfff}";
+        var registry = scenario.PluginRegistry ?? StrategyPluginRegistry.Empty;
+
+        var pluginInit = registry.ExecuteInitialize(scenario.Signals, timestamp, runId);
+        var lifecycleEvents = new List<StrategyPluginLifecycleEvent>(pluginInit.Events);
+
+        var signals = StrategyAggregator.Build(pluginInit.Signals);
+        lifecycleEvents.AddRange(registry.ExecuteCompositePublished(signals, timestamp, runId));
+
+        var policy = PolicyOverrideEngine.Apply(scenario.Limits, scenario.PolicyOverrides, timestamp);
+
+        IReadOnlyList<AllocationDraft> allocations;
+        IReadOnlyList<StrategyBookAllocationSummary> strategyBooks;
+        if (scenario.StrategyBooks is { Count: > 0 })
+        {
+            var multiBook = CapitalAllocator.BuildForStrategyBooks(pluginInit.Signals, scenario.StrategyBooks, policy.EffectiveLimits);
+            allocations = multiBook.PortfolioAllocations;
+            strategyBooks = multiBook.BookSummaries;
+        }
+        else
+        {
+            allocations = CapitalAllocator.Build(signals, scenario.CurrentBook, policy.EffectiveLimits);
+            strategyBooks = Array.Empty<StrategyBookAllocationSummary>();
+        }
+
+        var risk = RiskGate.Evaluate(allocations, policy.EffectiveLimits);
+        var intents = ExecutionPlanner.Build(allocations, risk, policy.EffectiveLimits);
         var telemetry = TelemetryBuilder.Build(allocations, risk, intents);
 
-        return new PlatformRunResult(
-            Timestamp: DateTime.UtcNow,
+        var run = new PlatformRunResult(
+            Timestamp: timestamp,
             Signals: signals,
             Allocations: allocations,
             Risk: risk,
             ExecutionIntents: intents,
-            Telemetry: telemetry);
+            Telemetry: telemetry,
+            StrategyBooks: strategyBooks,
+            PolicyAudit: policy.AuditTrail,
+            StrategyLifecycle: lifecycleEvents);
+
+        var completionEvents = registry.ExecuteRunCompleted(run, timestamp, runId);
+        return run with
+        {
+            StrategyLifecycle = run.StrategyLifecycle
+                .Concat(completionEvents)
+                .OrderBy(x => x.StrategyId, StringComparer.OrdinalIgnoreCase)
+                .ThenBy(x => x.Hook, StringComparer.OrdinalIgnoreCase)
+                .ToArray()
+        };
     }
 
     public static PlatformRunSummary BuildSummary(PlatformRunResult run)
@@ -30,9 +67,13 @@ public sealed class FundLaunchEngine
             .ThenBy(x => x.Symbol, StringComparer.OrdinalIgnoreCase)
             .FirstOrDefault();
 
+        var appliedPolicyCount = run.PolicyAudit.Count(x => string.Equals(x.Status, "APPLIED", StringComparison.OrdinalIgnoreCase));
+        var pendingPolicyCount = run.PolicyAudit.Count(x => string.Equals(x.Status, "PENDING_APPROVAL", StringComparison.OrdinalIgnoreCase));
+
         return new PlatformRunSummary(
             SignalSymbolCount: run.Signals.Count,
             AllocationCount: run.Allocations.Count,
+            StrategyBookCount: run.StrategyBooks.Count,
             RiskApproved: run.Risk.Approved,
             BreachCount: run.Risk.Breaches.Count,
             ExecutionIntentCount: run.ExecutionIntents.Count,
@@ -43,6 +84,9 @@ public sealed class FundLaunchEngine
             TopSignalSymbol: topSignal?.Symbol ?? "(none)",
             TopSignalScore: topSignal?.CompositeScore ?? 0m,
             FleetHealthScore: run.Telemetry.FleetHealthScore,
-            ControlState: run.Telemetry.ControlState);
+            ControlState: run.Telemetry.ControlState,
+            AppliedPolicyOverrideCount: appliedPolicyCount,
+            PendingPolicyOverrideCount: pendingPolicyCount,
+            StrategyLifecycleEvents: run.StrategyLifecycle.Count);
     }
 }
