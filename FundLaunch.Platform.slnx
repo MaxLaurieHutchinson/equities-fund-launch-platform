@@ -1,0 +1,10 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/FundLaunch.Platform.Cli/FundLaunch.Platform.Cli.csproj" />
+    <Project Path="src/FundLaunch.Platform.Contracts/FundLaunch.Platform.Contracts.csproj" />
+    <Project Path="src/FundLaunch.Platform.Core/FundLaunch.Platform.Core.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/FundLaunch.Platform.Core.Tests/FundLaunch.Platform.Core.Tests.csproj" />
+  </Folder>
+</Solution>

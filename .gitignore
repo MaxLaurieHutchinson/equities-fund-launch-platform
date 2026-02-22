@@ -1,0 +1,6 @@
+**/bin/
+**/obj/
+**/.vs/
+reports/
+artifacts/
+.DS_Store
