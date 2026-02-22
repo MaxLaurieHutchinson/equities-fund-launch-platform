@@ -26,6 +26,9 @@ public static class ArtifactWriter
         var tcaRoutePath = Path.Combine(outputDir, "tca-route-summary.csv");
         var feedbackRecommendationPath = Path.Combine(outputDir, "feedback-recommendations.csv");
         var feedbackSummaryPath = Path.Combine(outputDir, "feedback-loop-summary.json");
+        var arenaBidsPath = Path.Combine(outputDir, "agent-arena-bids.csv");
+        var arenaOutcomesPath = Path.Combine(outputDir, "agent-arena-outcomes.csv");
+        var arenaSummaryPath = Path.Combine(outputDir, "agent-arena-summary.json");
         var telemetryPath = Path.Combine(outputDir, "telemetry-dashboard.json");
         var summaryPath = Path.Combine(outputDir, "run-summary.json");
 
@@ -42,6 +45,9 @@ public static class ArtifactWriter
         File.WriteAllText(tcaRoutePath, BuildTcaRouteSummaryCsv(run.TcaAnalysis.RouteSummaries));
         File.WriteAllText(feedbackRecommendationPath, BuildFeedbackRecommendationCsv(run.FeedbackLoop.Recommendations));
         File.WriteAllText(feedbackSummaryPath, JsonSerializer.Serialize(run.FeedbackLoop.Summary, new JsonSerializerOptions { WriteIndented = true }));
+        File.WriteAllText(arenaBidsPath, BuildAgentArenaBidCsv(run.AgentArena.Bids));
+        File.WriteAllText(arenaOutcomesPath, BuildAgentArenaOutcomeCsv(run.AgentArena.Outcomes));
+        File.WriteAllText(arenaSummaryPath, JsonSerializer.Serialize(run.AgentArena.Summary, new JsonSerializerOptions { WriteIndented = true }));
         File.WriteAllText(telemetryPath, JsonSerializer.Serialize(run.Telemetry, new JsonSerializerOptions { WriteIndented = true }));
         File.WriteAllText(summaryPath, JsonSerializer.Serialize(summary, new JsonSerializerOptions { WriteIndented = true }));
     }
@@ -76,6 +82,10 @@ public static class ArtifactWriter
         sb.AppendLine($"- Feedback recommendations: `{summary.FeedbackRecommendationCount}`");
         sb.AppendLine($"- Feedback approved/blocked: `{summary.FeedbackApprovedCount}/{summary.FeedbackBlockedCount}`");
         sb.AppendLine($"- Feedback policy state: `{summary.FeedbackPolicyState}`");
+        sb.AppendLine($"- Agent arena rounds: `{summary.AgentArenaRounds}`");
+        sb.AppendLine($"- Agent arena participants: `{summary.AgentArenaAgents}`");
+        sb.AppendLine($"- Agent arena convergence: `{summary.AgentArenaConvergenceScore:F4}`");
+        sb.AppendLine($"- Agent arena state: `{summary.AgentArenaPolicyState}`");
 
         return sb.ToString();
     }
@@ -277,6 +287,46 @@ public static class ArtifactWriter
                 recommendation.Rationale.Replace(',', ';'),
                 recommendation.GuardrailDecision,
                 recommendation.GuardrailReason.Replace(',', ';')));
+        }
+
+        return sb.ToString();
+    }
+
+    private static string BuildAgentArenaBidCsv(IReadOnlyList<AgentArenaBid> bids)
+    {
+        var sb = new StringBuilder();
+        sb.AppendLine("round,agent_id,prior_capital_share,requested_capital_share,granted_capital_share,utility_score,confidence,decision,rationale");
+
+        foreach (var bid in bids)
+        {
+            sb.AppendLine(string.Join(',',
+                bid.Round,
+                bid.AgentId,
+                bid.PriorCapitalShare.ToString("F6", CultureInfo.InvariantCulture),
+                bid.RequestedCapitalShare.ToString("F6", CultureInfo.InvariantCulture),
+                bid.GrantedCapitalShare.ToString("F6", CultureInfo.InvariantCulture),
+                bid.UtilityScore.ToString("F6", CultureInfo.InvariantCulture),
+                bid.Confidence.ToString("F4", CultureInfo.InvariantCulture),
+                bid.Decision,
+                bid.Rationale.Replace(',', ';')));
+        }
+
+        return sb.ToString();
+    }
+
+    private static string BuildAgentArenaOutcomeCsv(IReadOnlyList<AgentArenaBookOutcome> outcomes)
+    {
+        var sb = new StringBuilder();
+        sb.AppendLine("agent_id,start_capital_share,final_capital_share,net_shift,avg_utility_score");
+
+        foreach (var outcome in outcomes)
+        {
+            sb.AppendLine(string.Join(',',
+                outcome.AgentId,
+                outcome.StartCapitalShare.ToString("F6", CultureInfo.InvariantCulture),
+                outcome.FinalCapitalShare.ToString("F6", CultureInfo.InvariantCulture),
+                outcome.NetShift.ToString("F6", CultureInfo.InvariantCulture),
+                outcome.AvgUtilityScore.ToString("F6", CultureInfo.InvariantCulture)));
         }
 
         return sb.ToString();

@@ -221,6 +221,42 @@ public sealed record FeedbackLoopResult(
     IReadOnlyList<RoutingPolicyRecommendation> Recommendations,
     FeedbackLoopSummary Summary);
 
+public sealed record AgentArenaConfig(
+    bool Enabled,
+    int NegotiationRounds,
+    decimal MaxShiftPerRound,
+    decimal MinConvergenceScore);
+
+public sealed record AgentArenaBid(
+    int Round,
+    string AgentId,
+    decimal PriorCapitalShare,
+    decimal RequestedCapitalShare,
+    decimal GrantedCapitalShare,
+    decimal UtilityScore,
+    decimal Confidence,
+    string Decision,
+    string Rationale);
+
+public sealed record AgentArenaBookOutcome(
+    string AgentId,
+    decimal StartCapitalShare,
+    decimal FinalCapitalShare,
+    decimal NetShift,
+    decimal AvgUtilityScore);
+
+public sealed record AgentArenaSummary(
+    bool Enabled,
+    int RoundsExecuted,
+    int ParticipatingAgents,
+    decimal ConvergenceScore,
+    string PolicyState);
+
+public sealed record AgentArenaResult(
+    IReadOnlyList<AgentArenaBid> Bids,
+    IReadOnlyList<AgentArenaBookOutcome> Outcomes,
+    AgentArenaSummary Summary);
+
 public sealed record PlatformTelemetry(
     decimal FleetHealthScore,
     int CriticalFlags,
@@ -241,7 +277,8 @@ public sealed record PlatformRunResult(
     IReadOnlyList<StrategyPluginLifecycleEvent> StrategyLifecycle,
     IncidentSimulationResult IncidentSimulation,
     TcaAnalysisResult TcaAnalysis,
-    FeedbackLoopResult FeedbackLoop);
+    FeedbackLoopResult FeedbackLoop,
+    AgentArenaResult AgentArena);
 
 public sealed record PlatformRunSummary(
     int SignalSymbolCount,
@@ -270,4 +307,8 @@ public sealed record PlatformRunSummary(
     int FeedbackRecommendationCount,
     int FeedbackApprovedCount,
     int FeedbackBlockedCount,
-    string FeedbackPolicyState);
+    string FeedbackPolicyState,
+    int AgentArenaRounds,
+    int AgentArenaAgents,
+    decimal AgentArenaConvergenceScore,
+    string AgentArenaPolicyState);

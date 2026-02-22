@@ -12,9 +12,11 @@ flowchart LR
     J --> K["Runtime Event Bus"]
     E --> F["Venue Adapter Layer"]
     E --> G["TCA Feedback Engine"]
+    G --> M["Agent Arena Engine"]
     D --> H["Observability Control Plane"]
     J --> H
     E --> H
+    M --> H
     G --> H
     H --> I["Audit & Dashboard Artifacts"]
     I --> L["Showcase Pack Writer (Public-Safe)"]
@@ -31,6 +33,7 @@ flowchart LR
 - `Runtime Event Bus`: ordered event timeline for incident and operational traces.
 - `TCA Feedback Engine`: slippage/cost attribution and policy feedback.
 - `Feedback Loop Engine`: closed-loop route recommendations with guardrail decisions.
+- `Agent Arena Engine`: deterministic multi-agent capital negotiation rounds.
 - `Observability Control Plane`: health checks, anomaly detection, incident timeline.
 - `Showcase Pack Writer`: sanitizes runtime outputs for public-facing sharing.
 
@@ -42,6 +45,7 @@ flowchart LR
 - strategy plugin lifecycle trace (`initialize`, `composite-published`, `run-completed`)
 - incident simulation traces (`timeline`, `replay`, `fault summary`)
 - TCA + feedback artifacts (`fill quality`, `route summary`, `policy recommendations`)
+- agent arena artifacts (`bids`, `outcomes`, `convergence summary`)
 - deterministic timestamp controls for reproducible snapshots
 - no external secrets required for baseline runs
 

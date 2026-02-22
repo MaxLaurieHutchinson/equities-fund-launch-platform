@@ -1,7 +1,7 @@
 # Equities Fund Launch Platform
 
 [![.NET](https://img.shields.io/badge/.NET-10.0-512BD4?logo=dotnet&logoColor=white)](https://dotnet.microsoft.com/)
-[![Stage](https://img.shields.io/badge/Stage-Phase%205%20Showcase-0B7285)](docs/PROJECT13_PLAN.md)
+[![Stage](https://img.shields.io/badge/Stage-Phase%205%20%2B%20Agent%20Arena-0B7285)](docs/PROJECT13_PLAN.md)
 [![Architecture](https://img.shields.io/badge/Architecture-Modular%20Control%20Plane-1C7ED6)](docs/ARCHITECTURE.md)
 
 A C# flagship build for algorithmic fund-launch technology ownership.
@@ -28,6 +28,7 @@ This project composes strategy onboarding, PM/trader controls, risk gating, exec
 - `Phase 3` complete: market regime simulation, incident fault injection, replay/timeline artifacts.
 - `Phase 4` complete: TCA fill-quality analytics and closed-loop feedback recommendations with guardrails.
 - `Phase 5` complete: deterministic showcase runbook, module guide, and public-safe packaging flow.
+- `Extension` complete: agent arena mode for multi-agent capital-share negotiation.
 
 ## Repository Map
 
@@ -69,6 +70,9 @@ dotnet run --project src/FundLaunch.Platform.Cli -- reports
 - `tca-route-summary.csv`
 - `feedback-recommendations.csv`
 - `feedback-loop-summary.json`
+- `agent-arena-bids.csv`
+- `agent-arena-outcomes.csv`
+- `agent-arena-summary.json`
 - `telemetry-dashboard.json`
 - `run-summary.json`
 
@@ -79,6 +83,7 @@ Public-safe showcase pack (sanitized aliases) is written to:
 - `artifacts/showcase/public/public-feedback-recommendations.csv`
 - `artifacts/showcase/public/public-event-timeline.csv`
 - `artifacts/showcase/public/public-strategy-lifecycle.csv`
+- `artifacts/showcase/public/public-agent-arena-bids.csv`
 
 ## Design Direction
 

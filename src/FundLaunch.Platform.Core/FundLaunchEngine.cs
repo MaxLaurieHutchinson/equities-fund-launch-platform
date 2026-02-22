@@ -41,6 +41,15 @@ public sealed class FundLaunchEngine
         var incident = IncidentSimulator.Run(signals, baselineIntents, scenario.IncidentSimulation, timestamp, eventBus);
         var tca = TcaAnalyzer.Analyze(baselineIntents, incident.AdjustedIntents, incident, timestamp, eventBus);
         var feedback = FeedbackLoopEngine.BuildRecommendations(tca, risk, incident, timestamp, eventBus);
+        var arena = AgentArenaEngine.Run(
+            strategyBooks,
+            tca,
+            feedback,
+            incident,
+            risk,
+            scenario.AgentArena,
+            timestamp,
+            eventBus);
         var incidentWithTimeline = incident with { Timeline = eventBus.Snapshot() };
 
         var telemetry = TelemetryBuilder.Build(
@@ -63,7 +72,8 @@ public sealed class FundLaunchEngine
             StrategyLifecycle: lifecycleEvents,
             IncidentSimulation: incidentWithTimeline,
             TcaAnalysis: tca,
-            FeedbackLoop: feedback);
+            FeedbackLoop: feedback,
+            AgentArena: arena);
 
         var completionEvents = registry.ExecuteRunCompleted(run, timestamp, runId);
         return run with
@@ -113,7 +123,11 @@ public sealed class FundLaunchEngine
             FeedbackRecommendationCount: run.FeedbackLoop.Summary.RecommendationCount,
             FeedbackApprovedCount: run.FeedbackLoop.Summary.ApprovedCount,
             FeedbackBlockedCount: run.FeedbackLoop.Summary.BlockedCount,
-            FeedbackPolicyState: run.FeedbackLoop.Summary.PolicyState);
+            FeedbackPolicyState: run.FeedbackLoop.Summary.PolicyState,
+            AgentArenaRounds: run.AgentArena.Summary.RoundsExecuted,
+            AgentArenaAgents: run.AgentArena.Summary.ParticipatingAgents,
+            AgentArenaConvergenceScore: run.AgentArena.Summary.ConvergenceScore,
+            AgentArenaPolicyState: run.AgentArena.Summary.PolicyState);
     }
 
     private static DateTime ResolveTimestamp(DateTime? maybeTimestamp)

@@ -22,6 +22,7 @@ public static class ShowcasePackWriter
         var feedbackPath = Path.Combine(outputDir, "public-feedback-recommendations.csv");
         var timelinePath = Path.Combine(outputDir, "public-event-timeline.csv");
         var lifecyclePath = Path.Combine(outputDir, "public-strategy-lifecycle.csv");
+        var arenaPath = Path.Combine(outputDir, "public-agent-arena-bids.csv");
 
         var publicSummary = new
         {
@@ -44,6 +45,10 @@ public static class ShowcasePackWriter
             summary.FeedbackApprovedCount,
             summary.FeedbackBlockedCount,
             summary.FeedbackPolicyState,
+            summary.AgentArenaRounds,
+            summary.AgentArenaAgents,
+            summary.AgentArenaConvergenceScore,
+            summary.AgentArenaPolicyState,
             sanitized_universe = new
             {
                 symbols = symbolMap.Count,
@@ -58,6 +63,7 @@ public static class ShowcasePackWriter
         File.WriteAllText(feedbackPath, BuildPublicFeedbackCsv(run.FeedbackLoop.Recommendations, symbolMap, bookMap));
         File.WriteAllText(timelinePath, BuildPublicTimelineCsv(run.IncidentSimulation.Timeline));
         File.WriteAllText(lifecyclePath, BuildPublicLifecycleCsv(run.StrategyLifecycle, strategyMap));
+        File.WriteAllText(arenaPath, BuildPublicArenaCsv(run.AgentArena.Bids, bookMap));
     }
 
     private static string BuildPublicMarkdown(PlatformRunSummary summary)
@@ -86,6 +92,12 @@ public static class ShowcasePackWriter
         sb.AppendLine($"- Estimated execution cost: `{summary.TcaTotalEstimatedCost:F2}`");
         sb.AppendLine($"- Recommendations (approved/blocked): `{summary.FeedbackApprovedCount}/{summary.FeedbackBlockedCount}`");
         sb.AppendLine($"- Feedback policy state: `{summary.FeedbackPolicyState}`");
+        sb.AppendLine();
+        sb.AppendLine("## Agent Arena");
+        sb.AppendLine($"- Negotiation rounds: `{summary.AgentArenaRounds}`");
+        sb.AppendLine($"- Participating agents: `{summary.AgentArenaAgents}`");
+        sb.AppendLine($"- Convergence score: `{summary.AgentArenaConvergenceScore:F4}`");
+        sb.AppendLine($"- Arena policy state: `{summary.AgentArenaPolicyState}`");
 
         return sb.ToString();
     }
@@ -168,6 +180,29 @@ public static class ShowcasePackWriter
                 item.Hook,
                 item.Status,
                 item.Timestamp.ToString("O", CultureInfo.InvariantCulture)));
+        }
+
+        return sb.ToString();
+    }
+
+    private static string BuildPublicArenaCsv(
+        IReadOnlyList<AgentArenaBid> bids,
+        IReadOnlyDictionary<string, string> bookMap)
+    {
+        var sb = new StringBuilder();
+        sb.AppendLine("round,agent_alias,prior_share,requested_share,granted_share,utility_score,confidence,decision");
+
+        foreach (var bid in bids)
+        {
+            sb.AppendLine(string.Join(',',
+                bid.Round,
+                ResolveAlias(bookMap, bid.AgentId),
+                bid.PriorCapitalShare.ToString("F6", CultureInfo.InvariantCulture),
+                bid.RequestedCapitalShare.ToString("F6", CultureInfo.InvariantCulture),
+                bid.GrantedCapitalShare.ToString("F6", CultureInfo.InvariantCulture),
+                bid.UtilityScore.ToString("F6", CultureInfo.InvariantCulture),
+                bid.Confidence.ToString("F4", CultureInfo.InvariantCulture),
+                bid.Decision));
         }
 
         return sb.ToString();
