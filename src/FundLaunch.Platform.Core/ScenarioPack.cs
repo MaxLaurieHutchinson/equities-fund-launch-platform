@@ -10,6 +10,7 @@ public sealed record FundLaunchScenario(
     IReadOnlyList<PolicyOverrideRequest>? PolicyOverrides = null,
     StrategyPluginRegistry? PluginRegistry = null,
     IncidentSimulationConfig? IncidentSimulation = null,
+    AgentArenaConfig? AgentArena = null,
     DateTime? FixedTimestampUtc = null);
 
 public static class FundLaunchScenarioFactory
@@ -119,6 +120,11 @@ public static class FundLaunchScenarioFactory
                 LatencySpikeMultiplier: 1.40m,
                 VenueRejectRatio: 0.34m,
                 FeedDropoutRatio: 0.22m),
+            AgentArena: new AgentArenaConfig(
+                Enabled: true,
+                NegotiationRounds: 3,
+                MaxShiftPerRound: 0.06m,
+                MinConvergenceScore: 0.86m),
             FixedTimestampUtc: new DateTime(2026, 02, 22, 12, 00, 00, DateTimeKind.Utc));
     }
 }

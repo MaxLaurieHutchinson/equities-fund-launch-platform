@@ -59,14 +59,23 @@ Build an integrated C# platform that can stand up a new algorithmic equities sub
 - Deterministic demo script and reproducible runbook (`scripts/generate_showcase.sh`, `docs/SHOWCASE_RUNBOOK.md`).
 - Public-safe outputs and sanitized package flow (`ShowcasePackWriter` -> `artifacts/showcase/public`).
 
+## Extension A - Agent Arena (Done)
+- Multi-agent capital negotiation engine (`AgentArenaEngine`) with deterministic rounds.
+- Agent bids + outcome artifacts:
+  - `agent-arena-bids.csv`
+  - `agent-arena-outcomes.csv`
+  - `agent-arena-summary.json`
+- Public-safe arena artifact:
+  - `public-agent-arena-bids.csv`
+- Arena outputs integrated into runtime summary and showcase markdown.
+
 ## Initial Milestone Definition
 
-### Milestone M5 (current target)
+### Milestone M6 (current target)
 - keep full runtime deterministic and test-stable
-- maintain public-safe packaging boundary
-- prepare optional expansion tracks (agent arena, systemic risk mini-lab)
+- maintain public-safe packaging boundary including agent arena outputs
+- prepare next expansion track: systemic-risk mini-lab
 
 ## Stretch Targets
 
-- Add `agent arena` mode where multiple strategy agents negotiate for capital.
 - Add systemic-risk mini-lab (cascade replay + containment response).

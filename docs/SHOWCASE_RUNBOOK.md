@@ -38,6 +38,9 @@ Internal runtime artifacts:
 - `reports/tca-route-summary.csv`
 - `reports/feedback-recommendations.csv`
 - `reports/feedback-loop-summary.json`
+- `reports/agent-arena-bids.csv`
+- `reports/agent-arena-outcomes.csv`
+- `reports/agent-arena-summary.json`
 - `reports/telemetry-dashboard.json`
 - `reports/run-summary.json`
 
@@ -49,6 +52,7 @@ Public-safe showcase package:
 - `artifacts/showcase/public/public-feedback-recommendations.csv`
 - `artifacts/showcase/public/public-event-timeline.csv`
 - `artifacts/showcase/public/public-strategy-lifecycle.csv`
+- `artifacts/showcase/public/public-agent-arena-bids.csv`
 
 ## Reproducibility Notes
 

@@ -11,7 +11,8 @@ flowchart TD
     E --> F["Incident Simulator"]
     F --> G["TCA Analyzer"]
     G --> H["Feedback Loop Engine"]
-    H --> I["Telemetry + Artifact Writers"]
+    H --> I["Agent Arena Engine"]
+    I --> J["Telemetry + Artifact Writers"]
 ```
 
 ## Module Responsibilities
@@ -45,6 +46,10 @@ flowchart TD
 `FundLaunch.Platform.Core/FeedbackLoopEngine.cs`
 - Generates route-tuning recommendations.
 - Applies guardrail decisions: approved, blocked, or monitor.
+
+`FundLaunch.Platform.Core/AgentArenaEngine.cs`
+- Runs deterministic multi-agent negotiation rounds for strategy-book capital shares.
+- Emits bid-by-round traces, convergence score, and arena policy state.
 
 `FundLaunch.Platform.Core/TelemetryBuilder.cs`
 - Fuses risk, incident, TCA, and feedback states into control-plane telemetry.

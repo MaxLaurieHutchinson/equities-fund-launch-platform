@@ -17,6 +17,7 @@ A modular platform that demonstrates how a new algorithmic equities sub-fund can
 - execution intent generation and route selection
 - incident simulation + replay workflow
 - TCA feedback loop with guardrail-aware recommendations
+- multi-agent arena for negotiated capital allocation
 - control-plane health/anomaly monitoring
 - public-safe showcase packaging (`artifacts/showcase/public`)
 

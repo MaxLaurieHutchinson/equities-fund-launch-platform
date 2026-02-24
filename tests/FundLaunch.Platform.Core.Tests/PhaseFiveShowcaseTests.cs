@@ -42,6 +42,7 @@ public sealed class PhaseFiveShowcaseTests
             var publicFeedbackPath = Path.Combine(outputDir, "public-feedback-recommendations.csv");
             var publicTimelinePath = Path.Combine(outputDir, "public-event-timeline.csv");
             var publicLifecyclePath = Path.Combine(outputDir, "public-strategy-lifecycle.csv");
+            var publicArenaPath = Path.Combine(outputDir, "public-agent-arena-bids.csv");
 
             Assert.True(File.Exists(publicReportPath));
             Assert.True(File.Exists(publicSummaryPath));
@@ -49,9 +50,11 @@ public sealed class PhaseFiveShowcaseTests
             Assert.True(File.Exists(publicFeedbackPath));
             Assert.True(File.Exists(publicTimelinePath));
             Assert.True(File.Exists(publicLifecyclePath));
+            Assert.True(File.Exists(publicArenaPath));
 
             var intentsText = File.ReadAllText(publicIntentsPath);
             var lifecycleText = File.ReadAllText(publicLifecyclePath);
+            var arenaText = File.ReadAllText(publicArenaPath);
 
             Assert.Contains("EQ01", intentsText);
             Assert.DoesNotContain("AAPL", intentsText, StringComparison.OrdinalIgnoreCase);
@@ -59,6 +62,7 @@ public sealed class PhaseFiveShowcaseTests
             Assert.DoesNotContain("TREND_CORE", lifecycleText, StringComparison.OrdinalIgnoreCase);
             Assert.DoesNotContain("MEAN_REV", lifecycleText, StringComparison.OrdinalIgnoreCase);
             Assert.Contains("STRAT01", lifecycleText);
+            Assert.Contains("BOOK01", arenaText);
         }
         finally
         {

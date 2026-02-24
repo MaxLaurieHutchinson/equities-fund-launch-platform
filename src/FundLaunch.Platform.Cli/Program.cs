@@ -57,6 +57,10 @@ Console.WriteLine($"TCA est. cost:           {summary.TcaTotalEstimatedCost:F2}"
 Console.WriteLine($"Feedback recs:           {summary.FeedbackRecommendationCount}");
 Console.WriteLine($"Feedback approved/blocked: {summary.FeedbackApprovedCount}/{summary.FeedbackBlockedCount}");
 Console.WriteLine($"Feedback policy state:   {summary.FeedbackPolicyState}");
+Console.WriteLine($"Agent arena rounds:      {summary.AgentArenaRounds}");
+Console.WriteLine($"Agent arena participants: {summary.AgentArenaAgents}");
+Console.WriteLine($"Agent arena convergence: {summary.AgentArenaConvergenceScore:F4}");
+Console.WriteLine($"Agent arena state:       {summary.AgentArenaPolicyState}");
 Console.WriteLine($"Run timestamp (UTC):     {run.Timestamp:O}");
 
 if (args.Contains("reports", StringComparer.OrdinalIgnoreCase))
@@ -78,6 +82,9 @@ if (args.Contains("reports", StringComparer.OrdinalIgnoreCase))
     Console.WriteLine($"TCA route CSV:           {outputDir}/tca-route-summary.csv");
     Console.WriteLine($"Feedback recs CSV:       {outputDir}/feedback-recommendations.csv");
     Console.WriteLine($"Feedback summary JSON:   {outputDir}/feedback-loop-summary.json");
+    Console.WriteLine($"Arena bids CSV:          {outputDir}/agent-arena-bids.csv");
+    Console.WriteLine($"Arena outcomes CSV:      {outputDir}/agent-arena-outcomes.csv");
+    Console.WriteLine($"Arena summary JSON:      {outputDir}/agent-arena-summary.json");
     Console.WriteLine($"Telemetry JSON:          {outputDir}/telemetry-dashboard.json");
     Console.WriteLine($"Summary JSON:            {outputDir}/run-summary.json");
 }
@@ -94,4 +101,5 @@ if (args.Contains("showcase", StringComparer.OrdinalIgnoreCase))
     Console.WriteLine($"Showcase feedback:       {outputDir}/public-feedback-recommendations.csv");
     Console.WriteLine($"Showcase timeline:       {outputDir}/public-event-timeline.csv");
     Console.WriteLine($"Showcase lifecycle:      {outputDir}/public-strategy-lifecycle.csv");
+    Console.WriteLine($"Showcase arena:          {outputDir}/public-agent-arena-bids.csv");
 }
