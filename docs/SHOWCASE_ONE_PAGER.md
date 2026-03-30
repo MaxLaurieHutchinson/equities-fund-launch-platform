@@ -4,6 +4,16 @@
 
 A modular platform that demonstrates how a new algorithmic equities sub-fund can be launched and operated from a technology perspective.
 
+## About
+
+This is a learning example and technical demo for financial systems engineering.
+It is intentionally deterministic, artifact-driven, and designed to be explored phase by phase.
+
+## Learning Lineage
+
+- Built after `quant-systems-lab` to integrate isolated quant modules into one control-plane runtime.
+- Created before `The Slippage Engine`, where asynchronous multi-agent market research extends these foundations.
+
 ## What It Shows
 
 - End-to-end ownership across strategy, risk, execution, and observability.

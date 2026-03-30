@@ -4,19 +4,22 @@
 Equities Fund Launch Platform
 
 ## Type
-C# integrated quant-fintech platform (flagship portfolio build)
+C# integrated quant-fintech learning demo (production-shaped architecture)
 
 ## Stage
-Project 13 kickoff slice complete
+Phase 5 plus Agent Arena extension complete
 
 ## Core Story
-A hands-on technology lead build that demonstrates ownership from strategy signal intake to risk gating, execution intent planning, and operational telemetry.
+A learning-focused platform that demonstrates end-to-end ownership from strategy signal intake to risk gating, execution intent planning, incident handling, TCA feedback loops, and operational telemetry.
+
+This repository follows `quant-systems-lab` and acts as the integration bridge before `The Slippage Engine`.
 
 ## Current Deliverable
-- runnable deterministic vertical slice
+- runnable deterministic integrated runtime
 - multi-project .NET architecture (`Contracts`, `Core`, `Cli`, `Tests`)
-- report artifacts (`md`, `csv`, `json`)
-- architecture and implementation roadmap docs
+- phase-complete artifact outputs (`md`, `csv`, `json`)
+- architecture, module guide, runbook, and best-practice docs
+- public-safe showcase packaging flow
 
 ## Next Milestone
-Expand into multi-strategy runtime, incident replay, and TCA feedback loops.
+Systemic-risk mini-lab extension with cascade replay and containment response scenarios.

@@ -4,15 +4,34 @@
 [![Stage](https://img.shields.io/badge/Stage-Phase%205%20%2B%20Agent%20Arena-0B7285)](docs/PROJECT13_PLAN.md)
 [![Architecture](https://img.shields.io/badge/Architecture-Modular%20Control%20Plane-1C7ED6)](docs/ARCHITECTURE.md)
 
-A C# flagship build for algorithmic fund-launch technology ownership.
+A learning-focused C# financial systems demo for building and operating an algorithmic equities sub-fund runtime.
 
 This project composes strategy onboarding, PM/trader controls, risk gating, execution orchestration, TCA feedback, and observability into one integrated runtime.
 
+## About
+
+This repository is intentionally educational and deterministic.
+
+It is designed to help engineers learn financial systems design by:
+
+- running a reproducible end-to-end platform
+- studying modular control-plane architecture in C#
+- inspecting auditable outputs (`md`, `csv`, `json`)
+- extending one phase at a time without losing baseline behavior
+
+## Learning Path and Provenance
+
+- `quant-systems-lab` establishes focused quant primitives and system-building patterns.
+- `equities-fund-launch-platform` integrates those primitives into one cohesive, production-shaped platform.
+- `The Slippage Engine` follows this work and extends into asynchronous multi-agent market ecology research.
+- This repository is the bridge from component-level learning to research-oriented multi-agent simulation.
+
 ## Why This Project
 
-- Demonstrates hands-on C# leadership in a quant-fund environment.
-- Shows system ownership across front-office and platform concerns.
-- Provides a credible bridge from PoC labs into integrated production-style architecture.
+- Demonstrates hands-on C# leadership in a quant-fund style environment.
+- Shows end-to-end ownership across front-office and platform concerns.
+- Provides a structured learning bridge from PoC labs to integrated architecture.
+- Preserves deterministic behavior while adding realistic operational concerns.
 
 ## Build Goals
 
@@ -30,12 +49,24 @@ This project composes strategy onboarding, PM/trader controls, risk gating, exec
 - `Phase 5` complete: deterministic showcase runbook, module guide, and public-safe packaging flow.
 - `Extension` complete: agent arena mode for multi-agent capital-share negotiation.
 
+## Engineering Best Practices
+
+- deterministic scenario fixtures and fixed timestamps for reproducibility
+- explicit artifact contracts for every meaningful run
+- phase-based test coverage in `tests/FundLaunch.Platform.Core.Tests`
+- risk and policy decisions written as auditable outputs
+- public-safe packaging boundary for portfolio and sharing use-cases
+- no external secrets required for baseline deterministic runs
+
+Full checklist: [`docs/BEST_PRACTICES.md`](docs/BEST_PRACTICES.md)
+
 ## Repository Map
 
 ```text
 .
 ├── docs/
 │   ├── ARCHITECTURE.md
+│   ├── BEST_PRACTICES.md
 │   ├── MODULE_GUIDE.md
 │   ├── PROJECT13_PLAN.md
 │   ├── SHOWCASE_ONE_PAGER.md
@@ -50,7 +81,8 @@ This project composes strategy onboarding, PM/trader controls, risk gating, exec
 ## Quick Start
 
 ```bash
-# (after initial code bootstrap)
+dotnet restore
+dotnet build
 dotnet test
 dotnet run --project src/FundLaunch.Platform.Cli -- reports
 ./scripts/generate_showcase.sh
@@ -88,6 +120,7 @@ Public-safe showcase pack (sanitized aliases) is written to:
 ## Design Direction
 
 - Architecture details: `docs/ARCHITECTURE.md`
+- Best-practice guardrails: `docs/BEST_PRACTICES.md`
 - Module responsibilities: `docs/MODULE_GUIDE.md`
 - Delivery plan and milestones: `docs/PROJECT13_PLAN.md`
 - Portfolio-facing one-page summary: `docs/SHOWCASE_ONE_PAGER.md`
